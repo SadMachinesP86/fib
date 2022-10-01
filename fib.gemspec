@@ -5,20 +5,20 @@ require_relative "lib/fib/version"
 Gem::Specification.new do |spec|
   spec.name = "fib"
   spec.version = Fib::VERSION
-  spec.authors = ["TODO: Write your name"]
-  spec.email = ["TODO: Write your email address"]
+  spec.authors = ["Derek Hockett"]
+  spec.email = ["derhockett@gmail.com"]
 
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
-  spec.description = "TODO: Write a longer description or delete this line."
-  spec.homepage = "TODO: Put your gem's website or public repo URL here."
+  spec.summary = "Practicing with building Ruby gems from Rust libraries."
+  spec.description = "Practicing with building Ruby gems from Rust libraries."
+  spec.homepage = "https://www.github.com/SadMachinesP86"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
   spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["source_code_uri"] = "https://www.github.com/SadMachinesP86"
+  spec.metadata["changelog_uri"] = "https://www.github.com/SadMachinesP86"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
