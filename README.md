@@ -1,39 +1,67 @@
 # Fib
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fib`. To experiment with that code, run `bin/console` for an interactive prompt.
+The purpose of this project is to experiment with the creation of Ruby extensions built in Rust. This project provides a Ruby gem which implements the Fibonacci algorithm, both in Rust and in native Ruby.
 
-TODO: Delete this and the text above, and describe your gem
+The code is basically copy-pasted from [this article](https://dev.to/kojix2/making-rubygem-with-rust-2ji6) - I added the native Ruby implementation and the `with_metrics` functionality to allow for the comparison of performance between Rust and Ruby.
 
-## Installation
+# Usage
 
-Add this line to your application's Gemfile:
+Note that, while structured as a gem, this project is intended to be cloned, built, and executed from the command line.
 
-```ruby
-gem 'fib'
+After cloning, bundle install and then build the Rust library (provided as a Rake task):
+
+```bash
+bundle install
+rake build
 ```
 
-And then execute:
+Then enter an IRB session with `bin/console`. The project defines a `Fib` module with `rust` and `ruby` methods, implementing the algorithm in the respective language:
 
-    $ bundle install
+```ruby
+Fib.ruby(5) # Evaluates the fifth item in the Fibonacci sequence in plain Ruby.
+Fib.rust(5) # The same value, calling the Rust implementation.
+```
 
-Or install it yourself as:
+# Notes
 
-    $ gem install fib
+Here's the basic process I used to make the project:
 
-## Usage
+## Initialization of Ruby gem and Rust library
 
-TODO: Write usage instructions here
+```bash
+# Initialize the Ruby gem
+bundle gem fib -t rspec
+cd fib
+# Initialize the Rust library
+cargo init --lib
+```
 
-## Development
+This generates a skeleton of a Ruby gem, with an empty Rust library inside it.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Add the following to Cargo.toml to instruct Cargo to compile the Rust code as a dynamic library:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```toml
+[lib]
+crate-type = ["cdylib"]
+```
 
-## Contributing
+Add the following to the Rakefile to define a Rake task to compile the library:
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/fib.
+```ruby
+task :rust_build do
+    `cargo rustc --release`
+    `mv -f ./target/release/libfib.so ./lib/fib`
+end
 
-## License
+task :build => :rust_build
+task :spec => :rust_build
+```
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+## Code Implementation
+
+Now that the basic skeleton is set up:
+
+* Add Rust code under `src/`, defining the public-facing API in `src/lib.rs`
+* Add Ruby code under `lib/`, defining the public-facing API in `lib/fib.rb`, and the foreign function interface into the Rust library in `lib/fib/ffi.rb`
+* Build with `rake build`
+* Run with `bin/console`
